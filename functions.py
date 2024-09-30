@@ -1,26 +1,31 @@
-def get_zodiac_sign(day, month):
+def getzodiac(day, month):
     if ((month==3) and (day>=21)) or ((month==4) and (day<=20)):
-        return "овен"
+        return "Овен"
     elif ((month==4) and (day>=21)) or ((month==5) and (day<=20)):
-        return "телец"
+        return "Телец"
     elif ((month==5) and (day>=21)) or ((month==6) and (day<=21)):
-        return "близнецы"
+        return "Близнецы"
     elif ((month==6) and (day>=22)) or ((month==7) and (day<=22)):
-        return "рак"
+        return "Рак"
     elif ((month==7) and (day>=23)) or ((month==8) and (day<=23)):
-        return "лев"
+        return "Лев"
     elif ((month==8) and (day>=24)) or ((month==9) and (day<=23)):
-        return "дева"
+        return "Дева"
     elif ((month==9) and (day>=24)) or ((month==10) and (day<=23)):
-        return "весы"
+        return "Весы"
     elif ((month==10) and (day>=24)) or ((month==11) and (day<=22)):
-        return "скорпион"
+        return "Скорпион"
     elif ((month==11) and (day>=23)) or ((month==12) and (day<=21)):
-        return "стрелец"
+        return "Стрелец"
     elif ((month==12) and (day>=22)) or ((month==1) and (day<=20)):
-        return "козерог"
+        return "Козерог"
     elif ((month==1) and (day>=21)) or ((month==2) and (day<=20)):
-        return "водолей"
+        return "Водолей"
     else:
-        return "рыбы"
+        return "Рыбы"
     
+def transformtext(word1, word2):
+    if int(word1)<1 | int(word1)>31 | int(word2)<1 | int(word2)>12:
+        return 0
+    else:
+        return 1
