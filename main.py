@@ -15,11 +15,20 @@ async def start(update: Update, context):
 
 async def handle_message(update: Update, context):
    user_text = update.message.text
-   message_words = user_text.split('.')
-   if transformtext(message_words[0], message_words[1]) == 0:
-      await update.message.reply_text("Ты ввёл дату в неправильном формате, попробуй ещё раз!")
+   message_words = user_text.split('.') #разбиение ввода на массив с разделителем "."
+
+   if len(message_words)!=2 or not(message_words[0].isdigit) or not(message_words[1].isdigit):
+      await update.message.reply_text("Ты ввёл дату в неправильном формате, попробуй ещё раз!") #проверка длины массива из строк, проверка на числа
+      return
+   
+   day = message_words[0]
+   month = message_words[1]
+
+   if transformtext(int(day), int(month)) == 0:
+      await update.message.reply_text("Ты ввёл дату в неправильном формате, попробуй ещё раз!") # обработка случая когда дата выходит за рамки
    else:
-      await update.message.reply_text("Твой знак зодиака - ", getzodiac(message_words[0], message_words[1]), "!")
+      zodiac_sign = getzodiac(int(day), int(month))
+      await update.message.reply_text(f"Твой знак зодиака - {zodiac_sign}!")
       
       
 if __name__ == '__main__':

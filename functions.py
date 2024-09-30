@@ -1,4 +1,4 @@
-def getzodiac(day, month):
+def getzodiac(day: int, month: int):
     if ((month==3) and (day>=21)) or ((month==4) and (day<=20)):
         return "Овен"
     elif ((month==4) and (day>=21)) or ((month==5) and (day<=20)):
@@ -25,7 +25,7 @@ def getzodiac(day, month):
         return "Рыбы"
     
 def transformtext(word1, word2):
-    if int(word1)<1 | int(word1)>31 | int(word2)<1 | int(word2)>12:
+    if word1<1 | word1>31 | word2<1 | word2>12:
         return 0
     else:
         return 1
