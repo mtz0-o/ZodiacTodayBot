@@ -8,33 +8,49 @@ with open('config.txt', 'r') as cfg:
   # получение токена бота
   data = json.load(cfg)
 
+user_state = {} # таблица для хранения статуса пользователя
+user_zodiac = {} # таблица для хранения зз пользователя
+
 reply_keyboard = [
      ['Узнать свой знак зодиака', 'Помощь'], 
-['ТЫК (только для вики тищенко)']
+['ТЫК (только для викули)', '/start']
 ]
 markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True) # создание клавиатуры с кнопками
 async def start(update: Update, context):
-    await update.message.reply_text("Приветик! Я твой бот для астрологических предсказаний или же гороскопов :) \
-                                    Выбери действие: ", reply_markup = markup)  # приветственное сообщение и отправка клавиатуры
+    user_id = update.message.from_user.id
+    await update.message.reply_text("Приветик! Я твой бот для астрологических предсказаний или же гороскопов :) Выбери действие: ", reply_markup = markup)  
+    user_state[user_id] = None
+    # приветственное сообщение и отправка клавиатуры
 
 async def handle_message(update: Update, context):
-   user_text = update.message.text
-   if user_text == 'Узнать свой знак зодиака':
+   user_id = update.message.from_user.id #запись id пользователя
+   user_text = update.message.text #входящее сообщение от пользователя
+
+
+   if user_text == 'Узнать свой знак зодиака': # обработка нажатия на кнопку1
       await update.message.reply_text("Напиши пожалуйста день и месяц своего рождения через точку \
                                        Например, 14.04")
-      user_text = update.message.text
+      user_state[user_id] = 'awaiting birthdate' #присвоение пользовтелю статус: ожидание ввода даты
+
+
+   elif user_state.get(user_id)=='awaiting birthdate': #обработка др, у пользователей со статусом 'awaiting birthdate'
       if checkinput(user_text) == 0:
          await update.message.reply_text("Ты ввёл дату в неправильном формате, попробуй ещё раз!")
       else:
-         zodiac_sign = getzodiac(int(get_day(user_text)), int(get_month(user_text)))
+         zodiac_sign = getzodiac(get_day(user_text), get_month(user_text))
          await update.message.reply_text(f"Твой знак зодиака - {zodiac_sign}!")
-   elif user_text == 'Помощь':
+         user_state[user_id] = None #обнуление статуса пользователя
+
+
+   elif user_text == 'Помощь': # обработка нажатия на кнопку2
       await update.message.reply_text("Бота разрабатывает @timofeevzakharov, по всем вопросам обращаться туда")
-   elif user_text == 'ТЫК (только для вики тищенко)':
-      await update.message.reply_text("Я ничево не понимаю в этих человеческих чувствах, \
-                                      но мой создатель 'Макар' хотел передать тебе, \
-                                      что очень сильно тебя любит <33")
+
+
+   elif user_text == 'ТЫК (только для викули)': # обработка нажатия на кнопку3
+      await update.message.reply_text("Я ничево не понимаю в этих человеческих чувствах, но мой создатель хотел передать тебе, что очень сильно тебя любит <33")
       
+
+
 if __name__ == '__main__':
     app = ApplicationBuilder().token(data["token"]).build() #создание и вызов экземпляра класса Application
     app.add_handler(CommandHandler('start', start)) #обработчик команды /start

@@ -25,24 +25,26 @@ def getzodiac(day: int, month: int): #функция для определени
         return "Рыбы"
     
 def checkdate(word1, word2):
-    if word1<1 | word1>31 | word2<1 | word2>12:
+    if word1<1 or word1>31 or word2<1 or word2>12:
         return 0
     else:
         return 1
+    
 def get_day(message):
     message_words = message.split('.') #разбиение сообщения на список строк с разделителем "."
-    return message_words[0]
+    return int(message_words[0])
+
 def get_month(message):
     message_words = message.split('.') 
-    return message_words[1]
+    return int(message_words[1])
     
 def checkinput(message):
     message_words = message.split('.') 
-    if len(message_words)!=2 or not(get_day(message).isdigit) or not(get_month(message).isdigit):
+    if len(message_words)!=2 or not(message_words[0].isdigit()) or not(message_words[1].isdigit()):
       #длина списка должна быть = 2, т.к. (14 и 04) - дата и месяц, /n
-      #проверка, что оба элемента списка состоят из цифр 
+      #проверка, что обе части сообщения состоят из цифр 
       return 0
-    if checkdate(get_day(message), get_month(message)) == 0:
+    elif checkdate(get_day(message), get_month(message)) == 0:
       return 0 # обработка случая когда введенная дата выходит за рамки
     else:
       return 1
