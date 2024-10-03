@@ -41,7 +41,7 @@ def get_month(message):
 def checkinput(message):
     message_words = message.split('.') 
     if len(message_words)!=2 or not(message_words[0].isdigit()) or not(message_words[1].isdigit()):
-      #длина списка должна быть = 2, т.к. (14 и 04) - дата и месяц, /n
+      #длина списка из слов сообщения должна быть = 2, т.к. (14 и 04) - дата и месяц, /n
       #проверка, что обе части сообщения состоят из цифр 
       return 0
     elif checkdate(get_day(message), get_month(message)) == 0:
