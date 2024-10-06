@@ -1,5 +1,6 @@
 from functions import getzodiac, checkinput, get_day, get_month
 from db import save_user, get_prediction, update_user_state, get_user_state, get_user_sign, update_user_sign
+from updatepredictions import scrape_and_update_predictions
 import json
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters
@@ -31,6 +32,7 @@ async def start(update: Update, context):
     user_id = update.message.from_user.id
     await update.message.reply_text("Приветик! Я твой бот для астрологических предсказаний или же гороскопов :) Выбери действие: ", reply_markup = start_keyboard())  
    #приветственное сообщение и отправка стартовой клавиатуры
+    scrape_and_update_predictions()
     update_user_state(user_id, None) #ресет статуса юзера в таблице users (при нажатии /start)
 
 

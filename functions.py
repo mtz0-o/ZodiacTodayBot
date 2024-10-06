@@ -1,28 +1,28 @@
 def getzodiac(day: int, month: int): #функция для определения зз
     if ((month==3) and (day>=21)) or ((month==4) and (day<=20)):
-        return "Овен"
+        return 'aries'
     elif ((month==4) and (day>=21)) or ((month==5) and (day<=20)):
-        return "Телец"
+        return 'taurus'
     elif ((month==5) and (day>=21)) or ((month==6) and (day<=21)):
-        return "Близнецы"
+        return 'gemini'
     elif ((month==6) and (day>=22)) or ((month==7) and (day<=22)):
-        return "Рак"
+        return 'cancer'
     elif ((month==7) and (day>=23)) or ((month==8) and (day<=23)):
-        return "Лев"
+        return 'leo'
     elif ((month==8) and (day>=24)) or ((month==9) and (day<=23)):
-        return "Дева"
+        return 'virgo'
     elif ((month==9) and (day>=24)) or ((month==10) and (day<=23)):
-        return "Весы"
+        return 'libra'
     elif ((month==10) and (day>=24)) or ((month==11) and (day<=22)):
-        return "Скорпион"
+        return 'scorpio'
     elif ((month==11) and (day>=23)) or ((month==12) and (day<=21)):
-        return "Стрелец"
+        return 'sagittarius'
     elif ((month==12) and (day>=22)) or ((month==1) and (day<=20)):
-        return "Козерог"
+        return 'capricorn'
     elif ((month==1) and (day>=21)) or ((month==2) and (day<=20)):
-        return "Водолей"
+        return 'aquarius'
     else:
-        return "Рыбы"
+        return 'pisces'
     
 def checkdate(word1, word2):
     if word1<1 or word1>31 or word2<1 or word2>12:
