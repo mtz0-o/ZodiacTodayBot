@@ -10,7 +10,7 @@ with open('config.txt', 'r') as cfg:
   data = json.load(cfg)
 
 
-def start_keyboard():
+def start_keyboard(): #начальная клавиатура пользователя
     return ReplyKeyboardMarkup([
         ['Узнать свой знак зодиака', 'Помощь'],
         ['ТЫК (только для викули)', '/start']
@@ -30,33 +30,33 @@ def vikaKeyboard(): #процедура для изменения клавиат
 async def start(update: Update, context):
     user_id = update.message.from_user.id
     await update.message.reply_text("Приветик! Я твой бот для астрологических предсказаний или же гороскопов :) Выбери действие: ", reply_markup = start_keyboard())  
-    update_user_state(user_id, None)
-    #user_state[user_id] = None #ресет статуса юзера (при нажатии /start)
-    # приветственное сообщение и отправка стартовой клавиатуры
+   #приветственное сообщение и отправка стартовой клавиатуры
+    update_user_state(user_id, None) #ресет статуса юзера в таблице users (при нажатии /start)
+
 
 async def handle_message(update: Update, context):
    user_id = update.message.from_user.id #запись id пользователя
    user_text = update.message.text #входящее сообщение от пользователя
-   user_state = get_user_state(user_id)
+   user_state = get_user_state(user_id) #статус пользователя из таблицы users
+
    if user_text == 'Узнать свой знак зодиака': # обработка нажатия на кнопку1
       await update.message.reply_text("Напиши пожалуйста день и месяц своего рождения через точку \
                                        Например, 14.04")
-      save_user(user_id, 'awaiting birtdate', None)
-      #user_state[user_id] = 'awaiting birthdate' #присвоение пользовтелю (от которого ожидается ввод др) статуса awaiting birthdate
+      save_user(user_id, 'awaiting birthdate', None) #запись пользователя в таблицу Users со статусом ожидания ввода др
 
    elif user_state=='awaiting birthdate': #обработка др, у пользователей со статусом = awaiting birthdate
-      if checkinput(user_text) == 0:
+      if checkinput(user_text) == 0: # проверка корректности ввода даты см. functions.py
          await update.message.reply_text("Ты ввёл дату в неправильном формате, попробуй ещё раз!")
       else:
-         user_sign = getzodiac(get_day(user_text), get_month(user_text))
-         update_user_sign(user_id, user_sign)
+         user_sign = getzodiac(get_day(user_text), get_month(user_text)) # получение зз пользователя
+         update_user_sign(user_id, user_sign) #запись зз пользователя в таблицу
+         update_user_state(user_id, 'zodiac_chosen') # изменение статуса пользователя на "зз выбран"
          await update.message.reply_text(f"Твой знак зодиака - {user_sign}!")
-         update_user_state(user_id, 'zodiac_chosen')
-         #user_state[user_id] = 'zodiac_chosen' #статус юзера - зз выбран
-         await update.message.reply_text(f"Теперь тебе доступно предсказание для {get_user_sign(user_id)} на сегодня!", reply_markup = getPredictionKeyboard())
+         await update.message.reply_text(f"Теперь тебе доступно предсказание для {user_sign} на сегодня!", reply_markup = getPredictionKeyboard())
+         # отправка клавиатуры для получения предсказания
 
    elif user_state=='zodiac_chosen' and user_text == 'Предсказание на сегодня': 
-      await update.message.reply_text(get_prediction(get_user_sign(user_id)))
+      await update.message.reply_text(get_prediction(get_user_sign(user_id))) # выдача предсказания соответствующего зз из таблицы Prediction 
       
 
    elif user_text == 'Помощь': # обработка нажатия на кнопку2
