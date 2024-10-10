@@ -1,5 +1,5 @@
-from functions import getzodiac, checkinput, get_day, get_month
-from db import save_user, get_prediction, update_user_state, get_user_state, get_user_sign, update_user_sign
+from functions import getzodiacid, checkinput, get_day, get_month, localizeSignRU
+from db import save_user, get_prediction, update_user_state, get_user_state, get_user_sign, update_user_sign_id
 from updatepredictions import scrape_and_update_predictions
 import json
 from telegram import Update, ReplyKeyboardMarkup
@@ -44,21 +44,22 @@ async def handle_message(update: Update, context):
    if user_text == 'Узнать свой знак зодиака': # обработка нажатия на кнопку1
       await update.message.reply_text("Напиши пожалуйста день и месяц своего рождения через точку \
                                        Например, 14.04")
-      save_user(user_id, 'awaiting birthdate', None) #запись пользователя в таблицу Users со статусом ожидания ввода др
+      save_user(user_id, 'awaiting birthdate') #запись пользователя в таблицу Users со статусом ожидания ввода др
 
    elif user_state=='awaiting birthdate': #обработка др, у пользователей со статусом = awaiting birthdate
       if checkinput(user_text) == 0: # проверка корректности ввода даты см. functions.py
          await update.message.reply_text("Ты ввёл дату в неправильном формате, попробуй ещё раз!")
       else:
-         user_sign = getzodiac(get_day(user_text), get_month(user_text)) # получение зз пользователя
-         update_user_sign(user_id, user_sign) #запись зз пользователя в таблицу
+         user_sign_id = getzodiacid(get_day(user_text), get_month(user_text)) # получение зз пользователя
+         update_user_sign_id(user_id, user_sign_id) #запись зз пользователя в таблицу
          update_user_state(user_id, 'zodiac_chosen') # изменение статуса пользователя на "зз выбран"
-         await update.message.reply_text(f"Твой знак зодиака - {user_sign}!")
-         await update.message.reply_text(f"Теперь тебе доступно предсказание для {user_sign} на сегодня!", reply_markup = getPredictionKeyboard())
+         usersignRU = localizeSignRU(get_user_sign(user_id))
+         await update.message.reply_text(f"Твой знак зодиака - {usersignRU}!")
+         await update.message.reply_text(f"Теперь тебе доступно предсказание для {usersignRU} на сегодня!", reply_markup = getPredictionKeyboard())
          # отправка клавиатуры для получения предсказания
 
-   elif user_state=='zodiac_chosen' and user_text == 'Предсказание на сегодня': 
-      await update.message.reply_text(get_prediction(get_user_sign(user_id))) # выдача предсказания соответствующего зз из таблицы Prediction 
+   elif user_state=='zodiac_chosen' and user_text == 'Предсказание на сегодня':
+      await update.message.reply_text(get_prediction(user_id)) # выдача предсказания соответствующего зз пользователя из таблицы Prediction 
       
 
    elif user_text == 'Помощь': # обработка нажатия на кнопку2

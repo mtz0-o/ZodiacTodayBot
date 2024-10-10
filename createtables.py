@@ -4,21 +4,34 @@ import sqlite3
 connection = sqlite3.connect('projectzodiac.db')
 cursor = connection.cursor()
 
+
+cursor.execute('''
+        CREATE TABLE IF NOT EXISTS ZodiacSigns (
+        zodiac_id INTEGER PRIMARY KEY,
+        zodiac_name TEXT UNIQUE
+        )
+''')
+connection.commit()
+
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS Users (
         user_id INTEGER PRIMARY KEY,
         user_state TEXT,
-        user_sign TEXT
+        user_sign_id TEXT,
+        FOREIGN KEY (user_sign_id) REFERENCES ZodiacSigns(zodiac_id)
+    )
+''')
+connection.commit()
+
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS Predictions (
+        prediction_id INTEGER PRIMARY KEY,
+        prediction_sign_id TEXT UNIQUE,
+        prediction_text TEXT,
+        FOREIGN KEY (prediction_sign_id) REFERENCES ZodiacSigns(zodiac_id)
     )
 ''')
 
-cursor.execute('''
-    CREATE TABLE IF NOT EXISTS Prediction (
-        prediction_id INTEGER PRIMARY KEY,
-        sign_name TEXT,
-        prediction_text TEXT
-    )
-''')
 
 connection.commit()
 connection.close()

@@ -18,11 +18,21 @@ def scrape_and_update_predictions():
         prediction_div = soup.find('div', class_='dGWT9 cidDQ')
         prediction_text = prediction_div.find('p').get_text()
 
+        #получение id соответствующего знака зодиака
+        cursor.execute('''
+            SELECT zodiac_id FROM ZodiacSigns
+            WHERE zodiac_name = ?
+        ''', (sign,)
+        )
+        result = cursor.fetchone()
+        zodiac_id = result[0]
+
         # Обновление бд
         cursor.execute('''
-            INSERT OR REPLACE INTO Prediction (sign_name, prediction_text)
+            INSERT OR REPLACE INTO Predictions (prediction_sign_id, prediction_text)
             VALUES (?, ?)
-        ''', (sign, prediction_text))
+            ''', (zodiac_id, prediction_text)
+            )
     
     connection.commit()
     connection.close()
