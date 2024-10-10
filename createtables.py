@@ -25,9 +25,9 @@ connection.commit()
 
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS Predictions (
-        prediction_id INTEGER PRIMARY KEY,
-        prediction_sign_id TEXT UNIQUE,
-        prediction_text TEXT,
+        prediction_sign_id TEXT PRIMARY KEY,
+        prediction_text_today TEXT,
+        prediction_text_tomorrow TEXT,
         FOREIGN KEY (prediction_sign_id) REFERENCES ZodiacSigns(zodiac_id)
     )
 ''')

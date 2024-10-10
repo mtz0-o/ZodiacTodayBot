@@ -1,9 +1,14 @@
 from functions import getzodiacid, checkinput, get_day, get_month, localizeSignRU
-from db import save_user, get_prediction, update_user_state, get_user_state, get_user_sign, update_user_sign_id
-from updatepredictions import scrape_and_update_predictions
+from db import save_user, get_prediction_today, get_prediction_tomorrow, update_user_state, get_user_state, get_user_sign, update_user_sign_id
+from updatepredictionstoday import updatepredictionstoday
+from updatepredictionstomorrow import updatepredictionstomorrow
+
 import json
+
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
 
 # открытие конфиг файла с токеном бота
 with open('config.txt', 'r') as cfg:
@@ -19,8 +24,8 @@ def start_keyboard(): #начальная клавиатура пользова�
 
 def getPredictionKeyboard(): #процедура для изменения клавиатуры
    return ReplyKeyboardMarkup( [
-     ['Предсказание на сегодня', 'Помощь'], 
-['ТЫК (только для викули)', '/start']
+     ['Предсказание на сегодня', 'Предсказание на завтра'], 
+      ['Помощь', '/start']
 ], one_time_keyboard=True)
 
 def vikaKeyboard(): #процедура для изменения клавиатуры
@@ -28,11 +33,17 @@ def vikaKeyboard(): #процедура для изменения клавиат
      ['ЛЮБЛЮ тебя', 'ОБОЖАЮ тебя'], ['/start']
 ], one_time_keyboard=True)
 
+def schedule_scraping(scheduler): # ежедневное обновление бд
+    scheduler.add_job(updatepredictionstoday, 'cron', hour=1, minute=0)  # Запускать ежедневно в 1:00 утра
+    scheduler.add_job(updatepredictionstomorrow, 'cron', hour=1, minute=5)
+
+
 async def start(update: Update, context):
+    updatepredictionstoday()
+    updatepredictionstomorrow()
     user_id = update.message.from_user.id
     await update.message.reply_text("Приветик! Я твой бот для астрологических предсказаний или же гороскопов :) Выбери действие: ", reply_markup = start_keyboard())  
    #приветственное сообщение и отправка стартовой клавиатуры
-    scrape_and_update_predictions()
     update_user_state(user_id, None) #ресет статуса юзера в таблице users (при нажатии /start)
 
 
@@ -50,17 +61,25 @@ async def handle_message(update: Update, context):
       if checkinput(user_text) == 0: # проверка корректности ввода даты см. functions.py
          await update.message.reply_text("Ты ввёл дату в неправильном формате, попробуй ещё раз!")
       else:
+         if get_day(user_text) == 11 and get_month(user_text) == 5:
+            await update.message.reply_text("Привет, любимая!!!!!")
          user_sign_id = getzodiacid(get_day(user_text), get_month(user_text)) # получение зз пользователя
          update_user_sign_id(user_id, user_sign_id) #запись зз пользователя в таблицу
          update_user_state(user_id, 'zodiac_chosen') # изменение статуса пользователя на "зз выбран"
          usersignRU = localizeSignRU(get_user_sign(user_id))
          await update.message.reply_text(f"Твой знак зодиака - {usersignRU}!")
-         await update.message.reply_text(f"Теперь тебе доступно предсказание для {usersignRU} на сегодня!", reply_markup = getPredictionKeyboard())
+         await update.message.reply_text(f"Тебе доступны предсказания для {usersignRU}!", reply_markup = getPredictionKeyboard())
          # отправка клавиатуры для получения предсказания
 
+
+
    elif user_state=='zodiac_chosen' and user_text == 'Предсказание на сегодня':
-      await update.message.reply_text(get_prediction(user_id)) # выдача предсказания соответствующего зз пользователя из таблицы Prediction 
-      
+      await update.message.reply_text(get_prediction_today(user_id)) # выдача предсказания соответствующего зз пользователя из таблицы Prediction 
+
+   elif user_state=='zodiac_chosen' and user_text == 'Предсказание на завтра':
+      await update.message.reply_text(get_prediction_tomorrow(user_id)) # выдача предсказания на завтра
+
+
 
    elif user_text == 'Помощь': # обработка нажатия на кнопку2
       await update.message.reply_text("Бота разрабатывает @timofeevzakharov, по всем вопросам обращаться туда")
@@ -77,8 +96,17 @@ async def handle_message(update: Update, context):
    elif user_text == 'я люблю макара' or user_text == 'Я ЛЮБЛЮ МАКАРА': # секретное взаимодействие 0_o
       await update.message.reply_text("я тоже тебя люблю!!!!! (если ты @iits_wiki)")
 
+   
+
 if __name__ == '__main__':
     app = ApplicationBuilder().token(data["token"]).build() #создание и вызов экземпляра класса Application
     app.add_handler(CommandHandler('start', start)) #обработчик команды /start
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message)) #обработчик поступающих сообщений
+    
+
+   # Создание и настройка планировщика
+    scheduler = AsyncIOScheduler()
+    schedule_scraping(scheduler)
+    scheduler.start()
+
     app.run_polling() #постоянный мониторинг поступающих в бота сообщений

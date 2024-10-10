@@ -74,12 +74,29 @@ def get_user_sign(user_id):
     else:
         return None
 
-def get_prediction(user_id):
+def get_prediction_today(user_id):
     connection = sqlite3.connect('projectzodiac.db')
     cursor = connection.cursor()
     # запрос для получения предсказания из таблицы Predictions
     cursor.execute('''
-        SELECT prediction_text FROM Predictions
+        SELECT prediction_text_today FROM Predictions
+        INNER JOIN Users
+        ON Users.user_sign_id = Predictions.prediction_sign_id
+        WHERE user_id = ?
+    ''', (user_id,))
+    prediction = cursor.fetchone()
+    connection.close()
+    if prediction:
+        return prediction[0]
+    else:
+        return "Предсказание не найдено."
+    
+def get_prediction_tomorrow(user_id):
+    connection = sqlite3.connect('projectzodiac.db')
+    cursor = connection.cursor()
+    # запрос для получения предсказания из таблицы Predictions
+    cursor.execute('''
+        SELECT prediction_text_tomorrow FROM Predictions
         INNER JOIN Users
         ON Users.user_sign_id = Predictions.prediction_sign_id
         WHERE user_id = ?
