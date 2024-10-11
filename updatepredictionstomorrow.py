@@ -27,12 +27,17 @@ def updatepredictionstomorrow():
         result = cursor.fetchone()
         zodiac_id = result[0]
 
-        # Обновление бд
+        #создание записи если не существует
+        cursor.execute('''
+            INSERT OR IGNORE INTO Predictions (prediction_sign_id)
+            VALUES (?)
+        ''', (zodiac_id,))
+
+        # Обновление предсказания
         cursor.execute('''
             UPDATE Predictions
             SET prediction_text_tomorrow = ?
-            WHERE prediction_sign_id = ?
-                                   
+            WHERE prediction_sign_id = ?               
             ''', (prediction_text, zodiac_id)
             )
     

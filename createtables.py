@@ -13,6 +13,17 @@ cursor.execute('''
 ''')
 connection.commit()
 
+signs = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 
+             'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces']
+
+for sign in signs:
+    cursor.execute('''
+    INSERT INTO ZodiacSigns (zodiac_name) VALUES = (?)
+
+    ''', (sign)
+    )
+connection.commit()
+
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS Users (
         user_id INTEGER PRIMARY KEY,
