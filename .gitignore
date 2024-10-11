@@ -4,3 +4,5 @@ projectzodiac.db
 __pycache__/db.cpython-310.pyc
 Insert_zodiac_signs
 __pycache__/functions.cpython-310.pyc
+__pycache__/updatepredictionstoday.cpython-310.pyc
+__pycache__/updatepredictionstomorrow.cpython-310.pyc

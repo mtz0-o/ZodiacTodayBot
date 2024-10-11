@@ -16,7 +16,7 @@ def updatepredictionstoday():
 
         # предсказание с сайта рамблер гороскопы
         prediction_div = soup.find('div', class_='dGWT9 cidDQ')
-        prediction_text_today = prediction_div.find('p').get_text()
+        prediction_text = prediction_div.find('p').get_text()
 
         #получение id соответствующего знака зодиака
         cursor.execute('''
@@ -29,10 +29,12 @@ def updatepredictionstoday():
 
         # Обновление бд
         cursor.execute('''
-            INSERT OR REPLACE INTO Predictions (prediction_sign_id, prediction_text_today)
-            VALUES (?, ?)
-            ''', (zodiac_id, prediction_text_today)
+            UPDATE Predictions
+            SET prediction_text_today = ?
+            WHERE prediction_sign_id = ?
+                                   
+            ''', (prediction_text, zodiac_id)
             )
-    connection.commit()
         
+    connection.commit()
     connection.close()

@@ -39,8 +39,6 @@ def schedule_scraping(scheduler): # ежедневное обновление б
 
 
 async def start(update: Update, context):
-    updatepredictionstoday()
-    updatepredictionstomorrow()
     user_id = update.message.from_user.id
     await update.message.reply_text("Приветик! Я твой бот для астрологических предсказаний или же гороскопов :) Выбери действие: ", reply_markup = start_keyboard())  
    #приветственное сообщение и отправка стартовой клавиатуры
@@ -83,6 +81,7 @@ async def handle_message(update: Update, context):
 
    elif user_text == 'Помощь': # обработка нажатия на кнопку2
       await update.message.reply_text("Бота разрабатывает @timofeevzakharov, по всем вопросам обращаться туда")
+      
 
    elif user_text == 'ТЫК (только для викули)': # секретное взаимодействие 0_o
       await update.message.reply_text("Я ничево не понимаю в этих человеческих чувствах, но мой создатель хотел передать тебе, что очень сильно тебя любит <33", reply_markup=vikaKeyboard())
@@ -108,5 +107,5 @@ if __name__ == '__main__':
     scheduler = AsyncIOScheduler()
     schedule_scraping(scheduler)
     scheduler.start()
-
+    print ('Бот работает!')
     app.run_polling() #постоянный мониторинг поступающих в бота сообщений
