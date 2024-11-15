@@ -35,11 +35,13 @@ def vikaKeyboard(): #процедура для изменения клавиат
 ], one_time_keyboard=True)
 
 def schedule_scraping(scheduler): # ежедневное обновление бд
-    scheduler.add_job(updatepredictionstoday, 'cron', hour=1, minute=0)  # Запускать ежедневно в 1:00 утра
-    scheduler.add_job(updatepredictionstomorrow, 'cron', hour=1, minute=5)
+    scheduler.add_job(updatepredictionstoday(), 'cron', hour=1, minute=0)  # Запускать ежедневно в 1:00 утра
+    scheduler.add_job(updatepredictionstomorrow(), 'cron', hour=1, minute=5)
 
 
 async def start(update: Update, context):
+    updatepredictionstoday()
+    updatepredictionstomorrow()
     user_id = update.message.from_user.id
     await update.message.reply_text("""Приветик! Я твой бот для астрологических предсказаний или же гороскопов :) 
                                        Выбери действие: """, reply_markup = start_keyboard())  

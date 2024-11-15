@@ -28,10 +28,10 @@ def updatepredictionstoday():
         zodiac_id = result[0]
 
         #создание записи если не существует
-        cursor.execute('''
-            INSERT OR IGNORE INTO Predictions (prediction_sign_id)
-            VALUES (?)
-        ''', (zodiac_id,))
+        #cursor.execute('''
+          #  INSERT OR IGNORE INTO Predictions (prediction_sign_id)
+           # VALUES (?)
+        #''', (zodiac_id,))
 
         # Обновление предсказания на сегодня в записи
         cursor.execute('''
