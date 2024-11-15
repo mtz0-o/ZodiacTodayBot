@@ -38,7 +38,7 @@ def updatepredictions():
         # Обновление бд
         cursor.execute('''
             INSERT OR REPLACE INTO Predictions (prediction_sign_id, prediction_text_today, prediction_text_tomorrow)
-            VALUES (?, ?)
+            VALUES (?, ?, ?)
             ''', (zodiac_id, prediction_text_today, prediction_text_tomorrow)
             )
     connection.commit()
