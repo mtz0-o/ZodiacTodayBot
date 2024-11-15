@@ -41,7 +41,8 @@ def schedule_scraping(scheduler): # ежедневное обновление б
 
 async def start(update: Update, context):
     user_id = update.message.from_user.id
-    await update.message.reply_text("Приветик! Я твой бот для астрологических предсказаний или же гороскопов :) Выбери действие: ", reply_markup = start_keyboard())  
+    await update.message.reply_text("""Приветик! Я твой бот для астрологических предсказаний или же гороскопов :) 
+                                       Выбери действие: """, reply_markup = start_keyboard())  
    #приветственное сообщение и отправка стартовой клавиатуры
     update_user_state(user_id, None) #ресет статуса юзера в таблице users (при нажатии /start)
 
@@ -52,8 +53,8 @@ async def handle_message(update: Update, context):
    user_state = get_user_state(user_id) #статус пользователя из таблицы users
 
    if user_text == 'Узнать свой знак зодиака': # обработка нажатия на кнопку1
-      await update.message.reply_text("Напиши пожалуйста день и месяц своего рождения через точку \
-                                       Например, 14.04")
+      await update.message.reply_text("""Напиши пожалуйста день и месяц своего рождения через точку
+                                         Например, 14.04""")
       save_user(user_id, 'awaiting birthdate') #запись пользователя в таблицу Users со статусом ожидания ввода др
 
    elif user_state=='awaiting birthdate': #обработка др, у пользователей со статусом = awaiting birthdate
@@ -65,7 +66,7 @@ async def handle_message(update: Update, context):
          user_sign_id = getzodiacid(get_day(user_text), get_month(user_text)) # получение зз пользователя
          update_user_sign_id(user_id, user_sign_id) #запись зз пользователя в таблицу
          update_user_state(user_id, 'zodiac_chosen') # изменение статуса пользователя на "зз выбран"
-         usersignRU = localizeSignRU(get_user_sign(user_id))
+         usersignRU = localizeSignRU(get_user_sign(user_id).lower())
          await update.message.reply_text(f"Твой знак зодиака - {usersignRU}!")
          await update.message.reply_text(f"Тебе доступны предсказания для {usersignRU}!", reply_markup = getPredictionKeyboard())
          # отправка клавиатуры для получения предсказания
@@ -85,7 +86,8 @@ async def handle_message(update: Update, context):
       
 
    elif user_text == 'ТЫК (только для викули)': # секретное взаимодействие 0_o
-      await update.message.reply_text("Я ничево не понимаю в этих человеческих чувствах, но мой создатель хотел передать тебе, что очень сильно тебя любит <33", reply_markup=vikaKeyboard())
+      await update.message.reply_text("""Я ничево не понимаю в этих человеческих чувствах, но мой создатель хотел передать тебе,
+                                       что очень сильно тебя любит <33""", reply_markup=vikaKeyboard())
 
    elif user_text == 'ЛЮБЛЮ тебя': # секретное взаимодействие 0_o
       await update.message.reply_text("Если ты - @iits_wiki, то это взаимно...")
