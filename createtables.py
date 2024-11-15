@@ -1,4 +1,6 @@
 import sqlite3
+from updatepredictionstoday import updatepredictionstoday
+from updatepredictionstomorrow import updatepredictionstomorrow 
 
 
 connection = sqlite3.connect('projectzodiac.db')
@@ -18,9 +20,8 @@ signs = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
 
 for sign in signs:
     cursor.execute('''
-    INSERT INTO ZodiacSigns (zodiac_name) VALUES = (?)
-
-    ''', (sign)
+    INSERT OR IGNORE INTO ZodiacSigns (zodiac_name) VALUES (?)
+    ''', (sign,)
     )
 connection.commit()
 
@@ -46,3 +47,6 @@ cursor.execute('''
 
 connection.commit()
 connection.close()
+
+updatepredictionstoday()
+updatepredictionstomorrow()
