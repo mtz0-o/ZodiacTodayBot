@@ -11,7 +11,7 @@ def updatepredictions():
 
     for sign in signs:
         url1 = f'https://horoscopes.rambler.ru/{sign}/'
-        url2 = f'https://horoscopes.rambler.ru/{sign}/tomorrow'
+        url2 = f'https://horoscopes.rambler.ru/{sign}/tomorrow/'
 
         response1 = requests.get(url1)
         response2 = requests.get(url2)
