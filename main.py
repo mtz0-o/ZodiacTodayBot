@@ -38,7 +38,6 @@ def schedule_scraping(scheduler): # ежедневное обновление б
 
 
 async def start(update: Update, context):
-    updatepredictions()
     user_id = update.message.from_user.id
     await update.message.reply_text("""Приветик! Я твой бот для астрологических предсказаний или же гороскопов :) 
                                        Выбери действие: """, reply_markup = start_keyboard())  

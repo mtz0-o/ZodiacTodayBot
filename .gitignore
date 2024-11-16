@@ -1,5 +1,3 @@
 config.txt
 projectzodiac.db
-__pycache__/db.cpython-310.pyc
-__pycache__/functions.cpython-310.pyc
-__pycache__/updatepredictions.cpython-310.pyc
+__pycache__
