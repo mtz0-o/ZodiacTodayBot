@@ -1,8 +1,7 @@
 from functions import getzodiacid, checkinput, get_day, get_month, localizeSignRU
 from db import save_user, get_prediction_today, get_prediction_tomorrow, update_user_state, get_user_state, get_user_sign, update_user_sign_id
 from updatepredictions import updatepredictions
-
-import json
+import os
 
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters
@@ -10,10 +9,16 @@ from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, fil
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 
-# открытие конфиг файла с токеном бота
+'''# открытие конфиг файла с токеном бота
 with open('config.txt', 'r') as cfg:
   # получение токена бота
-  data = json.load(cfg)
+  data = json.load(cfg)'''
+
+# Получение токена из переменной окружения
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+
+if not TELEGRAM_TOKEN:
+    raise ValueError("TELEGRAM_TOKEN is not set in environment variables")
 
 
 def start_keyboard(): #начальная клавиатура пользователя
