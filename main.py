@@ -1,7 +1,6 @@
 from functions import getzodiacid, checkinput, get_day, get_month, localizeSignRU
 from db import save_user, get_prediction_today, get_prediction_tomorrow, update_user_state, get_user_state, get_user_sign, update_user_sign_id
-from updatepredictionstoday import updatepredictionstoday
-from updatepredictionstomorrow import updatepredictionstomorrow
+from updatepredictions import updatepredictions
 
 import json
 
@@ -35,13 +34,11 @@ def vikaKeyboard(): #процедура для изменения клавиат
 ], one_time_keyboard=True)
 
 def schedule_scraping(scheduler): # ежедневное обновление бд
-    scheduler.add_job(updatepredictionstoday(), 'cron', hour=1, minute=0)  # Запускать ежедневно в 1:00 утра
-    scheduler.add_job(updatepredictionstomorrow(), 'cron', hour=1, minute=5)
+    scheduler.add_job(updatepredictions(), 'cron', hour=1, minute=0)  # Запускать ежедневно в 1:00 утра
 
 
 async def start(update: Update, context):
-    updatepredictionstoday()
-    updatepredictionstomorrow()
+    updatepredictions()
     user_id = update.message.from_user.id
     await update.message.reply_text("""Приветик! Я твой бот для астрологических предсказаний или же гороскопов :) 
                                        Выбери действие: """, reply_markup = start_keyboard())  
@@ -112,5 +109,6 @@ if __name__ == '__main__':
     scheduler = AsyncIOScheduler()
     schedule_scraping(scheduler)
     scheduler.start()
+
     print ('Бот работает!')
     app.run_polling() #постоянный мониторинг поступающих в бота сообщений

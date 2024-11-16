@@ -1,6 +1,5 @@
 import sqlite3
-from updatepredictionstoday import updatepredictionstoday
-from updatepredictionstomorrow import updatepredictionstomorrow 
+from updatepredictions import updatepredictions
 
 
 connection = sqlite3.connect('projectzodiac.db')
@@ -48,5 +47,4 @@ cursor.execute('''
 connection.commit()
 connection.close()
 
-updatepredictionstoday()
-updatepredictionstomorrow()
+updatepredictions()
