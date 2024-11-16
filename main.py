@@ -104,7 +104,7 @@ async def handle_message(update: Update, context):
    
 
 if __name__ == '__main__':
-    app = ApplicationBuilder().token(data["token"]).build() #создание и вызов экземпляра класса Application
+    app = ApplicationBuilder().token(TELEGRAM_TOKEN).build() #создание и вызов экземпляра класса Application
     app.add_handler(CommandHandler('start', start)) #обработчик команды /start
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message)) #обработчик поступающих сообщений
     
