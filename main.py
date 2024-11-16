@@ -34,7 +34,7 @@ def vikaKeyboard(): #процедура для изменения клавиат
 ], one_time_keyboard=True)
 
 def schedule_scraping(scheduler): # ежедневное обновление бд
-    scheduler.add_job(updatepredictions(), 'cron', hour=1, minute=0)  # Запускать ежедневно в 1:00 утра
+    scheduler.add_job(updatepredictions, 'cron', hour=1, minute=0)  # Запускать ежедневно в 1:00 утра
 
 
 async def start(update: Update, context):

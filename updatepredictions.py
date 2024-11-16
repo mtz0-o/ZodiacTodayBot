@@ -9,11 +9,11 @@ def parse_html(sign):
     url_today = f'https://horoscopes.rambler.ru/{sign}/'
     url_tomorrow = f'https://horoscopes.rambler.ru/{sign}/tomorrow/'
 
-    response = requests.get(url_today)
-    response = requests.get(url_tomorrow)
+    response_today = requests.get(url_today)
+    response_tomorrow = requests.get(url_tomorrow)
 
-    soup_today = BeautifulSoup(response.text, 'html.parser')
-    soup_tomorrow = BeautifulSoup(response.text, 'html.parser')
+    soup_today = BeautifulSoup(response_today.text, 'html.parser')
+    soup_tomorrow = BeautifulSoup(response_tomorrow.text, 'html.parser')
 
     # предсказание с сайта рамблер гороскопы
     prediction_div1 = soup_today.find('div', class_='dGWT9 cidDQ')
